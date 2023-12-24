@@ -17,8 +17,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static pro.sky.courseworktwo.constants.TestConstants.QUESTION_2;
-import static pro.sky.courseworktwo.constants.TestConstants.QUESTION_3;
+import static pro.sky.courseworktwo.constants.TestConstants.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -43,6 +42,7 @@ public class ExaminerServiceImplTest {
         List<Question> expected = new ArrayList<>(List.of(
                 QUESTION_2, QUESTION_3
         ));
+        when(questionService.getAll()).thenReturn(expected);
 
         int amount = 2;
         Collection<Question> result = out.getQuestions(amount);
@@ -51,5 +51,12 @@ public class ExaminerServiceImplTest {
         assertTrue(result.containsAll(expected));
         assertNotNull(result);
         verify(questionService, times(amount)).getRandomQuestion();
+    }
+
+    @Test
+    void shouldThrowQuestionInvalidAmountExceptionForGetQuestionsMethod() {
+        when(questionService.getAll()).thenReturn(QUESTIONS);
+        assertThrows(QuestionInvalidAmountException.class,
+                () -> out.getQuestions(12));
     }
 }
